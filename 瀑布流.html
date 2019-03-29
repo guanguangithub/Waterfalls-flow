@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>瀑布流</title>
+	<script src="jquery-3.3.1.js"></script>
+    <style>
+  	div{margin:0 auto;position:relative;}
+  	div img{position:absolute;left:0;top:0;}
+    </style>
+</head>
+
+<body>
+    <div>
+        <img src="images/0.jpg" alt="">
+        <img src="images/1.jpg" alt="">
+        <img src="images/2.jpg" alt="">
+        <img src="images/3.jpg" alt="">
+        <img src="images/4.jpg" alt="">
+        <img src="images/5.jpg" alt="">
+        <img src="images/6.jpg" alt="">
+        <img src="images/7.jpg" alt="">
+        <img src="images/8.jpg" alt="">
+        <img src="images/9.jpg" alt="">
+        <img src="images/10.jpg" alt="">
+        <img src="images/11.jpg" alt="">
+        <img src="images/12.jpg" alt="">
+        <img src="images/13.jpg" alt="">
+        <img src="images/14.jpg" alt="">
+        <img src="images/15.jpg" alt="">
+        <img src="images/16.jpg" alt="">
+        <img src="images/17.jpg" alt="">
+        <img src="images/18.jpg" alt="">
+        <img src="images/19.jpg" alt="">
+    </div>
+    <script>
+    $(function(){
+    	// 思路： 开始现将20个图片 放到页面上 获取 每一个图片的位置 放到数组里
+    	
+    	function Pbl(){
+    		
+    		this.arr = [];
+    		this.img_w = $("img").width();
+    		this.cell = Math.floor($(window).width()/this.img_w);
+    		$("div").width(this.img_w*this.cell+20)
+    		this.count = 0;
+    		this.init()
+    	}
+    	Pbl.prototype = {
+    		constructor : Pbl,
+    		init : function(){
+    			
+    			this.draw(0,$("img").length)
+    			this.scrollAdd()
+    		},
+    		draw : function(start,end){
+    			for(var i = start ;i< end; i++){
+					if(i<this.cell){
+    					this.arr.push(0)
+    				}
+    				var arr_min = Math.min.apply(Math,this.arr);
+    				var arr_idx = this.arr.indexOf(arr_min);
+    				this.arr[arr_idx] +=$("img").eq(i).height()+10;
+    				console.log(this.arr)
+    				$("img").eq(i).stop().animate({left:this.img_w*arr_idx,top:arr_min},1000);
+    				this.count++;
+    			}
+
+    		},
+    		activeDraw : function(){
+    			var arr_min = Math.min.apply(Math,this.arr);
+    			var arr_idx = this.arr.indexOf(arr_min);
+    				
+    			for(var i = 0;i < 20;i++){
+    				$("<img>").attr("src",`images/${i}.jpg`).css({
+    					left:this.img_w*arr_idx,top:arr_min}).appendTo('div')
+    			}
+    			this.draw(this.count,$("img").length)
+
+    			
+    		},
+    		scrollAdd : function(){
+    			var _this=this
+    			$(document).scroll(function(){
+    				var h = $(this).scrollTop();
+    				
+    				var dt = $(document).height()-$(window).height();
+    				console.log($(document).height(),$(window).height())
+    				if(h>=dt){
+    					_this.activeDraw()
+    				}
+    			})
+    		}
+
+    	}
+    	new Pbl();
+    	
+   })
+	</script>
+</body>
+</html>
